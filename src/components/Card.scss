@@ -1,0 +1,20 @@
+.card {
+    color: blue;
+    height: 200px;
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    transform: rotateY(-180deg);
+    transition: all 0.2s;
+
+    &.matched {
+        border: 2px solid blue;
+        transform: rotateY(180deg);
+    }
+
+}
+
+.hide {
+    opacity: 0;
+}
