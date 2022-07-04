@@ -44,4 +44,12 @@ export const setPrevCardKey = (prevCardKey) => {
     return { type: types.SET_PREV_CARD_KEY, prevCardKey }
 }
 
+export const setPlayerOneScore = (playerOneScore) => {
+    return { type: types.SET_PLAYER_ONE_SCORE, playerOneScore }
+}
+
+export const setPlayerTwoScore = (playerTwoScore) => {
+    return { type: types.SET_PLAYER_TWO_SCORE, playerTwoScore }
+}
+
 

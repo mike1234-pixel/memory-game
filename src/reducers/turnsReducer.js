@@ -3,7 +3,9 @@ const INITIAL_STATE = {
     choiceOne: null,
     choiceTwo: null,
     currentCardKey: '',
-    prevCardKey: ''
+    prevCardKey: '',
+    playerOneScore: 0,
+    playerTwoScore: 0
 };
 
 const turnsReducer = (state = INITIAL_STATE, action) => {
@@ -18,6 +20,10 @@ const turnsReducer = (state = INITIAL_STATE, action) => {
             return { ...state, currentCardKey: action.currentCardKey };
         case 'SET_PREV_CARD_KEY':
             return { ...state, prevCardKey: action.prevCardKey };
+        case 'SET_PLAYER_ONE_SCORE':
+            return { ...state, playerOneScore: action.playerOneScore };
+        case 'SET_PLAYER_TWO_SCORE':
+            return { ...state, playerTwoScore: action.playerTwoScore };
         default: return state;
     }
 }

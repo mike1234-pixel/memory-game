@@ -2,13 +2,13 @@ import { useEffect } from "react"
 import Card from './components/Card'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { saveCards, setChoiceOne, setChoiceTwo, setTurns, updateCards, setCurrentCardKey, setPrevCardKey } from './actions';
+import { saveCards, setChoiceOne, setChoiceTwo, setTurns, updateCards, setCurrentCardKey, setPrevCardKey, setPlayerOneScore, setPlayerTwoScore } from './actions';
 import successTone from './assets/success.mp3'
 import "./App.scss"
 
 const App = (props) => {
 
-  const { cards, saveCards, choiceOne, setChoiceOne, choiceTwo, setChoiceTwo, turns, setTurns, updateCards, currentCardKey, setCurrentCardKey, prevCardKey, setPrevCardKey } = props
+  const { cards, saveCards, choiceOne, setChoiceOne, choiceTwo, setChoiceTwo, turns, setTurns, updateCards, currentCardKey, setCurrentCardKey, prevCardKey, setPrevCardKey, playerOneScore, setPlayerOneScore, playerTwoScore, setPlayerTwoScore } = props
 
   useEffect(() => {
     saveCards()
@@ -38,10 +38,13 @@ const App = (props) => {
     setCurrentCardKey(cardKey)
   }
 
+  const resetPlayerScores = () => {
+    setPlayerOneScore(0)
+    setPlayerTwoScore(0)
+  }
+
   const checkAllCardsMatched = (cards) => {
     let cardsMatchedValues = []
-
-    console.log("CHOICE ONE " + choiceTwo)
 
     cards.forEach((card) => {
       cardsMatchedValues.push(card.matched)
@@ -52,11 +55,33 @@ const App = (props) => {
       allMatched = cardsMatchedValues.every(val => val === true);
     }
 
-    console.log(allMatched) // this souldnt be true at the start
-
     if (allMatched) {
       setTimeout(() => {
-        alert('you win!')
+
+        fetchSomeNewCats()
+        resetTurns(0)
+
+        if (!playerOneScore) {
+          alert(`PLAYER ONE SCORED ${turns}`)
+          setPlayerOneScore(turns)
+
+        } else {
+
+          setPlayerTwoScore(turns)
+
+          setTimeout(() => {
+            if (playerOneScore < turns) {
+              alert(`PLAYER ONE WINS BY ${turns - playerOneScore} POINTS`)
+              resetPlayerScores()
+              fetchSomeNewCats()
+            } else {
+              alert(`PLAYER TWO WINS BY ${playerOneScore - turns} POINTS`)
+              resetPlayerScores()
+              fetchSomeNewCats()
+            }
+          }, 200)
+
+        }
       }, 500)
     }
 
@@ -94,6 +119,8 @@ const App = (props) => {
         setTimeout(() => {
           setPrevCardKey('')
           setCurrentCardKey('')
+
+
         }, 1000)
 
         resetTurns()
@@ -108,23 +135,15 @@ const App = (props) => {
     checkAllCardsMatched(cards)
   }, [cards])
 
-
-
-
-
-
-
-
-
   return (
     <div>
       <button onClick={fetchSomeNewCats}>new game</button>
+      <h1>Memory Game</h1>
+      <p>The aim of the game is to match up all the cards in the fewest turns possible. Good luck!</p>
       <div className="cards">
         {cards.length > 0 ? cards.map((card, i) => {
 
           const { id, url, matched } = card
-
-
 
           return (
             <Card
@@ -142,6 +161,8 @@ const App = (props) => {
         }) : <p>loading</p>}
       </div>
       <p>Turns: {turns}</p>
+      <p>Player One Score: {playerOneScore}</p>
+      <p>Player Two Score: {playerTwoScore}</p>
     </div>
   )
 
@@ -153,13 +174,15 @@ const mapStateToProps = (state) => ({
   choiceTwo: state.turnsState.choiceTwo,
   turns: state.turnsState.turns,
   currentCardKey: state.turnsState.currentCardKey,
-  prevCardKey: state.turnsState.prevCardKey
+  prevCardKey: state.turnsState.prevCardKey,
+  playerTwoScore: state.turnsState.playerTwoScore,
+  playerOneScore: state.turnsState.playerOneScore,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    ...bindActionCreators({ saveCards, setChoiceOne, setChoiceTwo, setTurns, updateCards, setCurrentCardKey, setPrevCardKey }, dispatch),
+    ...bindActionCreators({ saveCards, setChoiceOne, setChoiceTwo, setTurns, updateCards, setCurrentCardKey, setPrevCardKey, setPlayerOneScore, setPlayerTwoScore }, dispatch),
   }
 }
 
