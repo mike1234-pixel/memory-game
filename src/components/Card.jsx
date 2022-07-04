@@ -13,8 +13,8 @@ const Card = (props) => {
             <div className="bg-image-preload" style={{ backgroundImage: "url(" + backgroundImage + ")" }}></div>
             <button
                 className={`card ${flipped && 'matched'}`}
-                matched-identifier={matchedIdentifier} // used for matching, 2 els will have this
-                unique-identifer={uniqueIdentifer} // used to identify the specific card
+                matched-identifier={matchedIdentifier} // used to match, applied to 2 matching cards
+                unique-identifer={uniqueIdentifer} // unique 
                 style={flipped ? { backgroundImage: "url(" + backgroundImage + ")" } : { background: 'blue' }}
                 onClick={(e) => handleClick(e)}
                 matched={String(matched)}

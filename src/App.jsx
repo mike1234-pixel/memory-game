@@ -16,6 +16,7 @@ const App = (props) => {
 
   const fetchSomeNewCats = () => {
     saveCards()
+    setTurns(0)
   }
 
   const resetTurns = () => {
@@ -37,11 +38,37 @@ const App = (props) => {
     setCurrentCardKey(cardKey)
   }
 
+  const checkAllCardsMatched = (cards) => {
+    let cardsMatchedValues = []
+
+    console.log("CHOICE ONE " + choiceTwo)
+
+    cards.forEach((card) => {
+      cardsMatchedValues.push(card.matched)
+    })
+
+    let allMatched
+    if (cardsMatchedValues.length > 0) {
+      allMatched = cardsMatchedValues.every(val => val === true);
+    }
+
+    console.log(allMatched) // this souldnt be true at the start
+
+    if (allMatched) {
+      setTimeout(() => {
+        alert('you win!')
+      }, 500)
+    }
+
+  }
+
   const audio = new Audio(successTone)
 
   const playSuccess = () => {
     audio.play()
   }
+
+
 
   useEffect(() => {
 
@@ -74,8 +101,17 @@ const App = (props) => {
 
     }
 
-
   }, [choiceOne, choiceTwo])
+
+  useEffect(() => {
+    console.log(cards)
+    checkAllCardsMatched(cards)
+  }, [cards])
+
+
+
+
+
 
 
 
@@ -87,6 +123,8 @@ const App = (props) => {
         {cards.length > 0 ? cards.map((card, i) => {
 
           const { id, url, matched } = card
+
+
 
           return (
             <Card
@@ -126,3 +164,4 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
+
