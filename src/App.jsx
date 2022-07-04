@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import Card from './components/Card'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { saveCards, setChoiceOne, setChoiceTwo, setTurns, updateCards } from './actions';
+import { saveCards, setChoiceOne, setChoiceTwo, setTurns, updateCards, setCurrentCardKey, setPrevCardKey } from './actions';
+import successTone from './assets/success.mp3'
 import "./App.scss"
 
 const App = (props) => {
 
-  const { cards, saveCards, choiceOne, setChoiceOne, choiceTwo, setChoiceTwo, turns, setTurns, updateCards } = props
-
-  const [cardKey, setCardKey] = useState('')
+  const { cards, saveCards, choiceOne, setChoiceOne, choiceTwo, setChoiceTwo, turns, setTurns, updateCards, currentCardKey, setCurrentCardKey, prevCardKey, setPrevCardKey } = props
 
   useEffect(() => {
     saveCards()
@@ -25,12 +24,23 @@ const App = (props) => {
   }
 
   const handleChoice = (cardId) => {
-    !choiceOne ? setChoiceOne(cardId) : setChoiceTwo(cardId)
-    setTurns(turns + 1)
+    if (!choiceOne) {
+      setChoiceOne(cardId)
+    } else {
+      setChoiceTwo(cardId)
+      setTurns(turns + 1)
+    }
   }
 
-  const handleUnique = (cardKey) => {
-    setCardKey(cardKey)
+  const setCurrent = (cardKey) => {
+    setPrevCardKey(currentCardKey)
+    setCurrentCardKey(cardKey)
+  }
+
+  const audio = new Audio(successTone)
+
+  const playSuccess = () => {
+    audio.play()
   }
 
   useEffect(() => {
@@ -39,6 +49,7 @@ const App = (props) => {
 
       if (choiceOne === choiceTwo) {
         console.log("match")
+        playSuccess()
         resetTurns()
 
         const updatedCards = cards.map((card) => {
@@ -52,6 +63,12 @@ const App = (props) => {
         updateCards(updatedCards)
       } else {
         console.log("no match")
+
+        setTimeout(() => {
+          setPrevCardKey('')
+          setCurrentCardKey('')
+        }, 1000)
+
         resetTurns()
       }
 
@@ -62,30 +79,27 @@ const App = (props) => {
 
 
 
+
   return (
     <div>
       <button onClick={fetchSomeNewCats}>new game</button>
-
       <div className="cards">
         {cards.length > 0 ? cards.map((card, i) => {
 
           const { id, url, matched } = card
 
-          console.log(cardKey)
-
           return (
-
             <Card
               key={id + i}
               backgroundImage={url}
-              id={id}
+              matchedIdentifier={id}
+              uniqueIdentifer={id + i}
               matched={matched}
-              flipped={matched || id + i === cardKey} // NEED TO ADD A CONDITION TO FLIP THE SELECTED CARD
+              flipped={matched || id + i === currentCardKey || id + i === prevCardKey} // if card is a matched card, or the last clicked card, it should be flipped
               handleChoice={handleChoice}
-              handleUnique={handleUnique}
-              unique={id + i}
+              setCurrent={setCurrent}
+              disabled={id + i === currentCardKey} // if the card is the currently flipped card then disabled click (otherwise two clicks on the same card flips both matching cards)
             />
-
           )
         }) : <p>loading</p>}
       </div>
@@ -99,177 +113,16 @@ const mapStateToProps = (state) => ({
   cards: state.cardsState.cards,
   choiceOne: state.turnsState.choiceOne,
   choiceTwo: state.turnsState.choiceTwo,
-  turns: state.turnsState.turns
+  turns: state.turnsState.turns,
+  currentCardKey: state.turnsState.currentCardKey,
+  prevCardKey: state.turnsState.prevCardKey
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch,
-    ...bindActionCreators({ saveCards, setChoiceOne, setChoiceTwo, setTurns, updateCards }, dispatch),
+    ...bindActionCreators({ saveCards, setChoiceOne, setChoiceTwo, setTurns, updateCards, setCurrentCardKey, setPrevCardKey }, dispatch),
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useEffect, useState } from 'react'
-// import Card from './components/Card'
-// import { connect } from 'react-redux'
-// import { bindActionCreators } from 'redux'
-// import { saveCards, updateCards, setTurns, setChoiceOne, setChoiceTwo } from './actions';
-// import "./App.scss"
-
-// const App = (props) => {
-
-//   const { cards,
-//     saveCards,
-//     updateCards,
-//     turns,
-//     setTurns,
-//     choiceOne,
-//     setChoiceOne,
-//     choiceTwo,
-//     setChoiceTwo
-//   } = props
-
-//   useEffect(() => {
-//     saveCards()
-
-//   }, []) // componentDidMount
-
-//   const [matchedCardIds, setMatchedCardIds] = useState([])
-
-//   const newGame = () => {
-
-//     const shuffledCards = [...cards].sort(() => Math.random() - 0.5)
-
-//     saveCards(shuffledCards)
-
-//     setTurns(0) // reset the game
-//     //setMatchedCardIds([])
-
-//   }
-
-//   const handleChoice = (cardId) => {
-//     !choiceOne ? setChoiceOne(cardId) : setChoiceTwo(cardId)
-//   }
-
-//   const resetTurn = () => {
-//     setTimeout(() => {
-//       setChoiceOne(null)
-//       setChoiceTwo(null)
-//     }, 1000)
-
-//     setTurns(turns + 1)
-//   }
-
-//   useEffect(() => {
-
-//     if (choiceOne && choiceTwo) {
-//       if (choiceOne === choiceTwo) { // MATCH
-//         //setMatchedCardIds(matchedCardIds => [...matchedCardIds, choiceTwo])
-
-//         console.log('MATCHED CARD IDs' + matchedCardIds)
-
-//         resetTurn()
-
-//         const updatedCards = cards.map((card) => {
-//           if (card.id === choiceOne) { // so card.id must equal choice one on the first choice only
-//             return { ...card, matched: true }
-//           } else {
-//             return card
-//           }
-//         })
-
-//         updateCards(updatedCards)
-
-//       } else { // NO MATCH
-
-//         resetTurn()
-//       }
-//     }
-//   }, [choiceOne, choiceTwo]) // fires whenever a dependecy changes
-
-//   return (
-//     <div>
-//       <button onClick={newGame}>new game</button>
-
-//       <div className="cards">
-//         {cards.length > 0 ? cards.map((card, i) => {
-
-//           const { id, url, matched } = card
-
-//           // console.log(typeof id, id)
-//           // console.log(typeof choiceOne, choiceOne) // object of type null
-
-//           // choiceOne is always reset to null
-
-//           // it works momentarily, but then because choiceOne gets reset,
-//           // the state of the component gets reset
-
-//           return (
-
-//             <Card
-//               key={id + i}
-//               backgroundImage={url}
-//               id={id}
-//               handleChoice={handleChoice}
-//               flipped={matched}
-
-//             />
-
-//           )
-//         }) : <p>loading</p>}
-//       </div>
-//       <p>Turns: {turns}</p>
-//     </div>
-//   )
-
-// }
-
-
-// // shuffles the cards on the first match?
-
-// const mapStateToProps = (state) => ({
-//   cards: state.cardsState.cards,
-//   turns: state.turnsState.turns,
-//   choiceOne: state.turnsState.choiceOne,
-//   choiceTwo: state.turnsState.choiceTwo,
-// });
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     dispatch,
-//     ...bindActionCreators({ saveCards, updateCards, setTurns, setChoiceOne, setChoiceTwo }, dispatch),
-//   }
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(App);
-
-// // 1) SORT THE FIRST TURN SHUFFLING BUG

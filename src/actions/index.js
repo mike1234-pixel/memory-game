@@ -36,5 +36,12 @@ export const setChoiceTwo = (cardId) => {
     return { type: types.SET_CHOICE_TWO, cardId }
 }
 
-// when saving the cards, each card should have a matched property
+export const setCurrentCardKey = (currentCardKey) => {
+    return { type: types.SET_CURRENT_CARD_KEY, currentCardKey }
+}
+
+export const setPrevCardKey = (prevCardKey) => {
+    return { type: types.SET_PREV_CARD_KEY, prevCardKey }
+}
+
 
