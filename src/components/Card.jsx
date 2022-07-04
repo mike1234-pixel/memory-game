@@ -1,3 +1,5 @@
+import { readBuilderProgram } from "typescript"
+import cardBackground from "../assets/cardbg.jpeg"
 import "./Card.scss"
 
 const Card = (props) => {
@@ -15,7 +17,7 @@ const Card = (props) => {
                 className={`card ${flipped && 'matched'}`}
                 matched-identifier={matchedIdentifier} // used to match, applied to 2 matching cards
                 unique-identifer={uniqueIdentifer} // unique 
-                style={flipped ? { backgroundImage: "url(" + backgroundImage + ")" } : { background: 'blue' }}
+                style={flipped ? { backgroundImage: "url(" + backgroundImage + ")" } : { backgroundImage: "url(" + cardBackground + ")", backgroundColor: "rgba(255,255,255,0.7)", backgroundBlendMode: "lighten" }}
                 onClick={(e) => handleClick(e)}
                 matched={String(matched)}
                 disabled={disabled}

@@ -3,7 +3,9 @@ import Card from './components/Card'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { saveCards, setChoiceOne, setChoiceTwo, setTurns, updateCards, setCurrentCardKey, setPrevCardKey, setPlayerOneScore, setPlayerTwoScore } from './actions';
-import successTone from './assets/success.mp3'
+import success from './assets/turnTone.mp3'
+import success1 from './assets/success1.mp3'
+import success2 from './assets/success2.mp3'
 import "./App.scss"
 
 const App = (props) => {
@@ -64,10 +66,12 @@ const App = (props) => {
         if (!playerOneScore) {
           alert(`PLAYER ONE SCORED ${turns}`)
           setPlayerOneScore(turns)
+          playPlayerOneCompleteSFX()
 
         } else {
 
           setPlayerTwoScore(turns)
+          playPlayerTwoCompleteSFX()
 
           setTimeout(() => {
             if (playerOneScore < turns) {
@@ -87,11 +91,22 @@ const App = (props) => {
 
   }
 
-  const audio = new Audio(successTone)
+  const itsAMatch = new Audio(success)
+  const player1complete = new Audio(success1)
+  const player2complete = new Audio(success2)
 
-  const playSuccess = () => {
-    audio.play()
+  const playSuccessSFX = () => {
+    itsAMatch.play()
   }
+
+  const playPlayerOneCompleteSFX = () => {
+    player1complete.play()
+  }
+
+  const playPlayerTwoCompleteSFX = () => {
+    player2complete.play()
+  }
+
 
 
 
@@ -101,7 +116,7 @@ const App = (props) => {
 
       if (choiceOne === choiceTwo) {
         console.log("match")
-        playSuccess()
+        playSuccessSFX()
         resetTurns()
 
         const updatedCards = cards.map((card) => {
@@ -121,7 +136,7 @@ const App = (props) => {
           setCurrentCardKey('')
 
 
-        }, 1000)
+        }, 500)
 
         resetTurns()
       }
@@ -131,15 +146,14 @@ const App = (props) => {
   }, [choiceOne, choiceTwo])
 
   useEffect(() => {
-    console.log(cards)
     checkAllCardsMatched(cards)
   }, [cards])
 
   return (
-    <div>
-      <button onClick={fetchSomeNewCats}>new game</button>
+    <div className="container">
       <h1>Memory Game</h1>
       <p>The aim of the game is to match up all the cards in the fewest turns possible. Good luck!</p>
+      <button onClick={fetchSomeNewCats} id="newGame">new game</button>
       <div className="cards">
         {cards.length > 0 ? cards.map((card, i) => {
 
