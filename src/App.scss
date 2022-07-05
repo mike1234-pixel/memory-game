@@ -36,6 +36,10 @@ body {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-gap: 30px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s;
+    margin-bottom: 60px;
 
     @media (max-width: 991px) {
         grid-template-columns: repeat(4, 1fr);
@@ -54,7 +58,24 @@ body {
     }
 }
 
-button#newGame {
+.player-turns {
+    opacity: 0;
+    height: 0;
+    transition: all 0.2s;
+}
+
+.cards.game-started,
+.player-turns.game-started {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.player-turns.game-started {
+    height: 30px;
+    opacity: 1;
+}
+
+button.button {
     padding: 12px 36px;
     margin: 10px 0;
     color: #fff;
@@ -68,10 +89,22 @@ button#newGame {
     transition: all 0.2s;
     cursor: pointer;
     margin-bottom: 30px;
+    margin-right: 30px;
+
+    &--round {
+        padding: 10px;
+        height: 40px;
+        width: 40px;
+    }
 
     &:hover,
     &:focus {
         background: linear-gradient(90deg, #b546ff, #ff6954);
     }
 
+}
+
+.number-of-players {
+    display: inline-block;
+    margin-right: 30px;
 }

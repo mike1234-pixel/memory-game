@@ -1,13 +1,15 @@
-import { readBuilderProgram } from "typescript"
+import React from "react"
 import cardBackground from "../assets/cardbg.jpeg"
+import { CardProps } from "../types/props/CardProps"
 import "./Card.scss"
 
-const Card = (props) => {
+const Card: React.FC<CardProps> = (props: CardProps) => {
     const { backgroundImage, matchedIdentifier, matched, handleChoice, setCurrent, flipped, uniqueIdentifer, disabled } = props
 
-    const handleClick = (e) => {
-        handleChoice(e.target.getAttribute('matched-identifier'))
-        setCurrent(e.target.getAttribute('unique-identifer'))
+    const handleClick: (e: React.MouseEvent) => void = (e) => {
+        const button = e.target as HTMLButtonElement
+        handleChoice(button.getAttribute('matched-identifier'))
+        setCurrent(button.getAttribute('unique-identifer'))
     }
 
     return (
@@ -19,7 +21,6 @@ const Card = (props) => {
                 unique-identifer={uniqueIdentifer} // unique 
                 style={flipped ? { backgroundImage: "url(" + backgroundImage + ")" } : { backgroundImage: "url(" + cardBackground + ")", backgroundColor: "rgba(255,255,255,0.7)", backgroundBlendMode: "lighten" }}
                 onClick={(e) => handleClick(e)}
-                matched={String(matched)}
                 disabled={disabled}
             ></button>
         </div>

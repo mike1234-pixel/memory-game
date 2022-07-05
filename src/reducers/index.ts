@@ -3,8 +3,9 @@ import cardsReducer from './cardsReducer'
 import turnsReducer from './turnsReducer'
 
 const rootReducer = combineReducers({
-    cardsState: cardsReducer,
     turnsState: turnsReducer,
+    cardsState: cardsReducer,
+
 });
 
 export default rootReducer;
