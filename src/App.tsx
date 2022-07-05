@@ -63,7 +63,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
     let allMatched: boolean = false;
 
     if (cardsMatchedValues.length > 0) {
-      allMatched = cardsMatchedValues.every((val: boolean) => val === true);
+      allMatched = cardsMatchedValues.every((val: boolean) => val);
     }
 
     if (allMatched) {
@@ -71,21 +71,24 @@ const App: React.FC<AppProps> = (props: AppProps) => {
 
         addScore(turns)
 
-        if (scores.length + 1 !== numberOfPlayers) {
+        console.log("checkAllCardsMatched")
+        console.log(numberOfPlayers)
+        console.log(scores)
 
-          fetchSomeNewCats()
-          resetTurns()
-          playPlayerCompleteSFX()
-
-        } else {
+        if (numberOfPlayers === scores.length) {
+          // all players have had their turn, game over
 
           setTimeout(() => {
-            numberOfPlayers !== 1 && alert('reset the game')
+            alert('reset the game')
             fetchSomeNewCats()
             resetGame()
             playPlayerCompleteSFX()
           }, 5000)
 
+        } else {
+          fetchSomeNewCats()
+          resetTurns()
+          playPlayerCompleteSFX()
         }
       }, 500)
 
