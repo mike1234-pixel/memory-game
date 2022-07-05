@@ -83,7 +83,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
             fetchSomeNewCats()
             resetGame()
             playPlayerCompleteSFX()
-          }, 5000)
+          }, 0)
 
         } else {
           fetchSomeNewCats()
@@ -149,7 +149,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
       <h1>Memory Game</h1>
       <p>The aim of the game is to match up all the cards in the fewest turns possible. Good luck!</p>
 
-      <h2 className={`player-turns ${gameStarted}`}>Player {scores.length + 1 !== numberOfPlayers + 1 && scores.length + 1}: Turns = {turns}</h2>
+      <h2 className={`player-turns ${gameStarted}`}>Player {scores.length + 1}: Turns = {turns}</h2>
       <h3>select number of players</h3>
       <div>
         <button className="button button--round" onClick={removePlayer}>-</button>

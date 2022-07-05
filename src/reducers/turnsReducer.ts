@@ -50,7 +50,8 @@ const turnsReducer = (state: State = INITIAL_STATE, action: Action) => {
             console.log("turnsReducer")
             console.log(action)
             console.log(state.scores)
-            return { ...state, scores: state.scores.push(action.score) }
+            state.scores.push(action.score)
+            return { ...state, scores: state.scores }
         case 'SET_GAME_STARTED':
             return { ...state, gameStarted: action.gameStarted }
         case 'RESET_GAME':
