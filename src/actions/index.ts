@@ -7,7 +7,7 @@ export const saveCards: () => (dispatch: Dispatch) => Promise<void> = () => {
 
     return (dispatch: Dispatch) => {
 
-        return axios.get('https://api.thecatapi.com/v1/images/search?limit=1s')
+        return axios.get('https://api.thecatapi.com/v1/images/search?limit=1')
             .then((response: AxiosResponse) => {
                 let cards: Array<CardI> = response.data.concat(response.data).map((element: CardI) => ({
                     ...element,
