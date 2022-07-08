@@ -18,6 +18,11 @@ A `matchedIdentifier` property uses the matched value of the card objects and ke
 
 There is also state that sets current and previous cards using a `uniqueIdenitifer`, so that current and previous cards can remain flipped even when they are not matched.
 
+## Improvements
+
+The number of cats requested in the api request is currently hardcoded. Some additional logic could be written to allow the user to select the number of cards they want in their game. 
+
+All it requires is an input where the user can select the number of cards, then that value halved can be used in the api request.
 
 
 
