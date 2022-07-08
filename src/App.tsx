@@ -7,6 +7,7 @@ import success from './assets/turnTone.mp3'
 import success1 from './assets/success1.mp3'
 import { AppProps } from "./types/props/AppProps";
 import CardI from './types/Card'
+import { allAreEqual } from "./functions/allAreEqual";
 import "./App.scss"
 
 const App: React.FC<AppProps> = (props: AppProps) => {
@@ -16,6 +17,17 @@ const App: React.FC<AppProps> = (props: AppProps) => {
   useEffect(() => {
     saveCards()
   }, [])
+
+  const itsAMatch: HTMLAudioElement = new Audio(success)
+  const playerComplete: HTMLAudioElement = new Audio(success1)
+
+  const playSuccessSFX: () => void = () => {
+    itsAMatch.play()
+  }
+
+  const playPlayerCompleteSFX: () => void = () => {
+    playerComplete.play()
+  }
 
   const fetchSomeNewCats: () => void = () => {
     saveCards()
@@ -63,45 +75,45 @@ const App: React.FC<AppProps> = (props: AppProps) => {
     let allMatched: boolean = false;
 
     if (cardsMatchedValues.length > 0) {
-      allMatched = cardsMatchedValues.every((val: boolean) => val === true);
+      allMatched = cardsMatchedValues.every((val: boolean) => val);
     }
 
     if (allMatched) {
-      setTimeout(() => {
 
-        addScore(turns)
-
-        if (scores.length + 1 !== numberOfPlayers) {
-
-          fetchSomeNewCats()
-          resetTurns()
-          playPlayerCompleteSFX()
-
-        } else {
-
-          setTimeout(() => {
-            numberOfPlayers !== 1 && alert('reset the game')
-            fetchSomeNewCats()
-            resetGame()
-            playPlayerCompleteSFX()
-          }, 5000)
-
-        }
-      }, 500)
+      addScore(turns)
 
     }
   }
 
-  const itsAMatch: HTMLAudioElement = new Audio(success)
-  const playerComplete: HTMLAudioElement = new Audio(success1)
+  useEffect(() => {
+    if (scores.length === numberOfPlayers) {
+      setTimeout(() => {
 
-  const playSuccessSFX: () => void = () => {
-    itsAMatch.play()
-  }
+        const lowest = Math.min(...scores)
+        const highest = Math.max(...scores)
+        const difference = highest - lowest // correct
 
-  const playPlayerCompleteSFX: () => void = () => {
-    playerComplete.play()
-  }
+        if (numberOfPlayers !== 1) {
+          if (allAreEqual(scores)) {
+            alert('DRAW')
+          } else {
+            alert(`Player ${scores.indexOf(lowest) + 1} wins by ${difference} points`)
+          }
+        }
+
+        fetchSomeNewCats()
+        resetGame()
+        playPlayerCompleteSFX()
+      }, 500)
+
+    } else if (scores.length !== 0) {
+
+      fetchSomeNewCats()
+      resetTurns()
+      playPlayerCompleteSFX()
+
+    }
+  }, [scores])
 
   useEffect(() => {
 
@@ -113,7 +125,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
         resetTurns()
 
         const updatedCards = cards.map((card) => {
-          if (card.id === choiceOne) { // so card.id must equal choice one on the first choice only
+          if (card.id === choiceOne) {
             return { ...card, matched: true }
           } else {
             return card
@@ -156,7 +168,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
       <button onClick={startGame} className="button">start game</button>
       {scores.length > 0 && scores.map((score, i) => {
         return (
-          <p key={score + i}>Player {i + 1} score: {score}</p>
+          <p key={i}>Player {i + 1} score: {score}</p>
         )
       })}
       <div className={`cards ${gameStarted}`}>
@@ -166,7 +178,7 @@ const App: React.FC<AppProps> = (props: AppProps) => {
 
           return (
             <Card
-              key={id + i}
+              key={i}
               backgroundImage={url}
               matchedIdentifier={id}
               uniqueIdentifer={id + i}
