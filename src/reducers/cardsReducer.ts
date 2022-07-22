@@ -1,24 +1,28 @@
-import CardI from '../types/Card'
+import CardI from "../types/Card";
 
 interface State {
-    cards: Array<CardI>
+  cards: Array<CardI>;
 }
 
-interface Action {
-    type: string,
-    cards: Array<CardI>
+export interface SaveCardsAction {
+  type: 'SAVE_CARDS';
+  payload: Array<CardI>;
 }
 
 const INITIAL_STATE = {
-    cards: [],
+  cards: [],
 };
 
-const cardsReducer = (state: State = INITIAL_STATE, action: Action) => {
-    switch (action.type) {
-        case 'SAVE_CARDS':
-            return { ...state, cards: action.cards };
-        default: return state;
-    }
-}
+const cardsReducer = (
+  state: State = INITIAL_STATE,
+  action: SaveCardsAction
+) => {
+  switch (action.type) {
+    case "SAVE_CARDS":
+      return { ...state, cards: action.payload };
+    default:
+      return state;
+  }
+};
 
 export default cardsReducer;
